@@ -1,12 +1,32 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-import classes from './Layout.module.css'
+import classes from './Layout.module.css';
+import Toolbar from '../Navigation/Toolbar/Toolbar';
+import SideDrawer from '../Navigation/SideDrawer/SideDrawer';
 
-const layout = (props) => (
-  <>
-    <div >toolbar, sidedravew, bakcdrop</div>
-    <main className={classes.Content}>{props.children}</main>
-  </>
-);
+class Layout extends Component {
+  state = {
+    showSideDrawer: false
+  }
 
-export default layout;
+  sideDrawerCancelHandler = () => {
+    this.setState({showSideDrawer: false})
+  }
+
+  showMenuHandler = () => {
+    const show = this.state.showSideDrawer
+    this.setState({showSideDrawer: !show})
+  }
+
+  render() {
+    return (
+      <>
+        <Toolbar showMenu={this.showMenuHandler} />
+        <SideDrawer show={this.state.showSideDrawer} cancel={this.sideDrawerCancelHandler} />
+        <main className={classes.Content}>{this.props.children}</main>
+      </>
+    );
+  }
+}
+
+export default Layout;
