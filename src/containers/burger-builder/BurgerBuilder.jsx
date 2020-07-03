@@ -4,7 +4,7 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
-import orderAxios from '../../axios-orders';
+import myAxios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../components/withErrorHandler/withErrorHandler';
 
@@ -16,17 +16,21 @@ const INGREDIENT_PRICES = {
 };
 class BurgerBuilder extends Component {
   state = {
-    ingredients: {
-      salad: 0,
-      bacon: 0,
-      cheese: 0,
-      meat: 0,
-    },
+    ingredients: null,
     totalPrice: 6,
     purchasable: false,
     purchasing: false,
     loading: false,
   };
+
+  componentDidMount() {
+    myAxios
+      .get('https://burgerbuilder-samih.firebaseio.com/ingredients.json')
+      .then((resp) => {
+        this.setState({ ingredients: resp.data });
+      })
+      .catch(error => {console.log(error)})
+  }
 
   updatePurchasable(ingredients) {
     const purchasable = Object.values(ingredients).some((amount) => amount > 0);
@@ -43,7 +47,7 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    this.setState({loading: true})
+    this.setState({ loading: true });
 
     const order = {
       ingredients: this.state.ingredients,
@@ -60,15 +64,14 @@ class BurgerBuilder extends Component {
       deliveryMethod: 'home delivery',
     };
 
-    orderAxios
+    myAxios
       .post('/orders.json', order)
       .then((resp) => {
-        this.setState({loading: false, purchasing: false})
-
+        this.setState({ loading: false, purchasing: false });
       })
       .catch((err) => {
-        this.setState({loading: false, purchasing: false}) 
-      })
+        this.setState({ loading: false, purchasing: false });
+      });
   };
 
   addIngHandler = (type) => {
@@ -102,11 +105,12 @@ class BurgerBuilder extends Component {
   };
 
   render() {
-    const output = Object.entries(this.state.ingredients);
-    output.forEach((val) => (val[1] = val[1] <= 0));
-    const disabledInfo = Object.fromEntries(output);
-
-    console.log('disabledInfo', disabledInfo);
+    let disabledInfo = null;
+    if (this.state.ingredients) {
+      const output = Object.entries(this.state.ingredients);
+      output.forEach((val) => (val[1] = val[1] <= 0));
+      disabledInfo = Object.fromEntries(output);
+    }
     return (
       <>
         <Modal
@@ -124,18 +128,22 @@ class BurgerBuilder extends Component {
             />
           )}
         </Modal>
-        <Burger ingredients={this.state.ingredients} />
-        <BuildControls
-          addIngHandler={this.addIngHandler}
-          removeIngHandler={this.removeIngHandler}
-          disabledInfo={disabledInfo}
-          totalPrice={this.state.totalPrice.toFixed(2)}
-          purchasable={this.state.purchasable}
-          purchaseHandler={this.purchaseHandler}
-        />
+        {this.state.ingredients ? (
+          <>
+            <Burger ingredients={this.state.ingredients} />
+            <BuildControls
+              addIngHandler={this.addIngHandler}
+              removeIngHandler={this.removeIngHandler}
+              disabledInfo={disabledInfo}
+              totalPrice={this.state.totalPrice.toFixed(2)}
+              purchasable={this.state.purchasable}
+              purchaseHandler={this.purchaseHandler}
+            />
+          </>
+        ) : null}
       </>
     );
   }
 }
 
-export default withErrorHandler(BurgerBuilder, orderAxios);
+export default withErrorHandler(BurgerBuilder, myAxios);
