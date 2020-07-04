@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -21,6 +22,7 @@ class BurgerBuilder extends Component {
     purchasable: false,
     purchasing: false,
     loading: false,
+    doCheckout: false,
   };
 
   componentDidMount() {
@@ -29,7 +31,9 @@ class BurgerBuilder extends Component {
       .then((resp) => {
         this.setState({ ingredients: resp.data });
       })
-      .catch(error => {console.log(error)})
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   updatePurchasable(ingredients) {
@@ -47,31 +51,33 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    this.setState({ loading: true });
+    // this.setState({ loading: true });
 
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: 'Sam',
-        address: {
-          street: 'street123',
-          zip: 99910,
-          country: 'Finland',
-        },
-        email: 'samsamsam71477@gmail.com',
-      },
-      deliveryMethod: 'home delivery',
-    };
+    // const order = {
+    //   ingredients: this.state.ingredients,
+    //   price: this.state.totalPrice,
+    //   customer: {
+    //     name: 'Sam',
+    //     address: {
+    //       street: 'street123',
+    //       zip: 99910,
+    //       country: 'Finland',
+    //     },
+    //     email: 'samsamsam71477@gmail.com',
+    //   },
+    //   deliveryMethod: 'home delivery',
+    // };
 
-    myAxios
-      .post('/orders.json', order)
-      .then((resp) => {
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch((err) => {
-        this.setState({ loading: false, purchasing: false });
-      });
+    // myAxios
+    //   .post('/orders.json', order)
+    //   .then((resp) => {
+    //     this.setState({ loading: false, purchasing: false });
+    //   })
+    //   .catch((err) => {
+    //     this.setState({ loading: false, purchasing: false });
+    //   });
+
+    this.setState({ doCheckout: true });
   };
 
   addIngHandler = (type) => {
@@ -113,6 +119,11 @@ class BurgerBuilder extends Component {
     }
     return (
       <>
+        {this.state.doCheckout ? (
+          <Redirect
+            to={{ pathname: 'checkout', ingredients: this.state.ingredients }}
+          />
+        ) : null}
         <Modal
           show={this.state.purchasing}
           purchaseCancel={this.purchaseCancelHandler}
