@@ -4,11 +4,13 @@ import Modal from '../../components/UI/Modal/Modal';
 
 const withErrorHandler = (WrappedComponent, orderAxios) => {
   return class extends Component {
+    _isMounted = false;
     state = {
       error: null
     }
 
     componentDidMount() {
+      this._isMounted = true;
       orderAxios.interceptors.request.use(req => {
         this.setState({error: null});
         return req;

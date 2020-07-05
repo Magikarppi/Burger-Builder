@@ -6,7 +6,12 @@ import ContactInfo from './ContactInfo/ContactInfo';
 
 class Checkout extends Component {
   state = {
-    ingredients: this.props.location.ingredients ? this.props.location.ingredients : {},
+    ingredients: this.props.location.ingredients
+      ? this.props.location.ingredients
+      : {},
+    totalPrice: this.props.location.totalPrice
+      ? this.props.location.totalPrice
+      : 6,
   };
 
   checkoutCancelHandler = () => {
@@ -14,7 +19,7 @@ class Checkout extends Component {
   };
 
   checkoutContinueHandler = () => {
-    this.props.history.replace('/checkout/contact-info')
+    this.props.history.replace('/checkout/contact-info');
   };
 
   render() {
@@ -25,7 +30,15 @@ class Checkout extends Component {
           checkoutCancel={this.checkoutCancelHandler}
           checkoutContinue={this.checkoutContinueHandler}
         />
-        <Route path={this.props.match.path + '/contact-info'} component={ContactInfo} />
+        <Route
+          path={this.props.match.path + '/contact-info'}
+          render={() => (
+            <ContactInfo
+              ingredients={this.state.ingredients}
+              totalPrice={this.state.totalPrice}
+            />
+          )}
+        />
       </div>
     );
   }

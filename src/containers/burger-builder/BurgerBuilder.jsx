@@ -16,6 +16,8 @@ const INGREDIENT_PRICES = {
   bacon: 0.9,
 };
 class BurgerBuilder extends Component {
+  _isMounted = false;
+
   state = {
     ingredients: null,
     totalPrice: 6,
@@ -26,6 +28,7 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     myAxios
       .get('https://burgerbuilder-samih.firebaseio.com/ingredients.json')
       .then((resp) => {
@@ -52,30 +55,6 @@ class BurgerBuilder extends Component {
 
   purchaseContinueHandler = () => {
     // this.setState({ loading: true });
-
-    // const order = {
-    //   ingredients: this.state.ingredients,
-    //   price: this.state.totalPrice,
-    //   customer: {
-    //     name: 'Sam',
-    //     address: {
-    //       street: 'street123',
-    //       zip: 99910,
-    //       country: 'Finland',
-    //     },
-    //     email: 'samsamsam71477@gmail.com',
-    //   },
-    //   deliveryMethod: 'home delivery',
-    // };
-
-    // myAxios
-    //   .post('/orders.json', order)
-    //   .then((resp) => {
-    //     this.setState({ loading: false, purchasing: false });
-    //   })
-    //   .catch((err) => {
-    //     this.setState({ loading: false, purchasing: false });
-    //   });
 
     this.setState({ doCheckout: true });
   };
@@ -121,7 +100,7 @@ class BurgerBuilder extends Component {
       <>
         {this.state.doCheckout ? (
           <Redirect
-            to={{ pathname: 'checkout', ingredients: this.state.ingredients }}
+            to={{ pathname: 'checkout', ingredients: this.state.ingredients, totalPrice: this.state.totalPrice }}
           />
         ) : null}
         <Modal
