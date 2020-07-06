@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 
 import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
 import classes from './ContactInfo.module.css';
 import myAxios from '../../../axios-orders';
 
@@ -50,7 +51,10 @@ class ContactInfo extends Component {
       <div className={classes.ContactInfo}>
         <h4>Please enter your contact info</h4>
         <form>
-          <input className={classes.Input} type='text' name='name' placeholder='your name' />
+          <Input inputtype='input' type='text' name='name' placeholder='your name' />
+          <Input inputtype='input' type='email' name='email' placeholder='your email' />
+          <Input inputtype='input' type='text' name='street' placeholder='street' />
+          <Input inputtype='input' type='text' name='postal' placeholder='postal code' />
           <Button btnType='Success' clicked={this.orderHandler} >PLACE ORDER</Button>
         </form>
       </div>
