@@ -14,12 +14,18 @@ const formHelper = (elType, elConfType, elConfHolder) => {
       placeholder: elConfHolder,
     },
     value: '',
+    validation: {
+      required: true,
+      valid: false,
+      touched: false
+    }
   };
 };
 
 class ContactInfo extends Component {
   state = {
     loading: false,
+    formIsValid: false,
     orderForm: {
       name: formHelper('input', 'text', 'your name'),
       email: formHelper('input', 'email', 'your email'),
@@ -33,26 +39,37 @@ class ContactInfo extends Component {
             { value: 'pick up', displayValue: 'pick up' },
           ],
         },
+        validation: {
+          required: true,
+          valid: true,
+        }
       },
     },
   };
 
+  checkValidity = (value, rules) => {
+    let isValid = null;
+
+    if (rules.required) {
+      isValid = value.trim() !== '';
+    }
+
+    return isValid;
+  }
+
   orderHandler = (e) => {
     e.preventDefault();
 
+    this.setState({loading: true})
+
+    const formData = {};
+    for (let formElementIdentifier in this.state.orderForm) {
+      formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value
+    }
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
-      customer: {
-        name: 'Sam',
-        address: {
-          street: 'street123',
-          zip: 99910,
-          country: 'Finland',
-        },
-        email: 'samsamsam71477@gmail.com',
-      },
-      deliveryMethod: 'home delivery',
+      orderData: formData
     };
 
     myAxios
@@ -76,10 +93,17 @@ class ContactInfo extends Component {
     }
 
     updatedFormElement.value = event.target.value;
+    updatedFormElement.validation.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.validation.touched = true;
     updatedOrderForm[inputId] = updatedFormElement;
 
-    this.setState({orderForm: updatedOrderForm})
+    const formIsValid = Object.values(updatedOrderForm).every(value => (
+      value.validation.valid
+    ))
+
+    this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid})
   }
+
 
   render() {
     const formElements = Object.entries(this.state.orderForm).map(
@@ -88,20 +112,24 @@ class ContactInfo extends Component {
       }
     );
 
+    console.log('formElements', formElements)
+
     return (
       <div className={classes.ContactInfo}>
         <h4>Please enter your contact info</h4>
-        <form>
+        <form onSubmit={this.orderHandler}>
           {formElements.map((el) => (
             <Input
               key={el.id}
               elementType={el.config.elementType}
               elementConfig={el.config.elementConfig}
               value={el.config.value}
+              invalid={!el.config.validation.valid}
+              touched={el.config.validation.touched}
               handleChange={(event) => this.inputChangeHandler(event, el.id)}
             />
           ))}
-          <Button btnType="Success" clicked={this.orderHandler}>
+          <Button btnType="Success" disabled={!this.state.formIsValid}>
             PLACE ORDER
           </Button>
         </form>

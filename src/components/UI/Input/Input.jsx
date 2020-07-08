@@ -4,12 +4,19 @@ import classes from './Input.module.css';
 
 const input = (props) => {
   let inputElement = null;
+  const inputClasses = [classes.InputElement];
+
+  let validationErrorMessage = null;
+  if (props.invalid && props.touched) {
+    inputClasses.push(classes.Invalid)
+    validationErrorMessage = <p>Please enter a valid value</p>
+  }
 
   switch (props.elementType) {
     case 'input':
       inputElement = (
         <input
-          className={classes.InputElement}
+          className={inputClasses.join(' ')}
           value={props.value}
           {...props.elementConfig}
           onChange={props.handleChange}
@@ -19,7 +26,7 @@ const input = (props) => {
     case 'select':
       inputElement = (
         <select
-          className={classes.InputElement}
+          className={inputClasses.join(' ')}
           value={props.value}
           onChange={props.handleChange}
         >
@@ -34,7 +41,7 @@ const input = (props) => {
     default:
       inputElement = (
         <input
-          className={classes.InputElement}
+          className={inputClasses.join(' ')}
           value={props.value}
           {...props.elementConfig}
           onChange={props.handleChange}
@@ -46,6 +53,7 @@ const input = (props) => {
     <div className={classes.Input}>
       <label className={classes.Label}>{props.label}</label>
       {inputElement}
+      {validationErrorMessage}
     </div>
   );
 };
