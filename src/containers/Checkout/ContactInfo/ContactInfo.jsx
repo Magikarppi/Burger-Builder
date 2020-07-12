@@ -39,6 +39,7 @@ class ContactInfo extends Component {
             { value: 'pick up', displayValue: 'pick up' },
           ],
         },
+        value: 'home delivery',
         validation: {
           required: true,
           valid: true,
