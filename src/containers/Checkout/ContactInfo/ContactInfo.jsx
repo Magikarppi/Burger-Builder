@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
@@ -113,8 +114,6 @@ class ContactInfo extends Component {
       }
     );
 
-    console.log('formElements', formElements)
-
     return (
       <div className={classes.ContactInfo}>
         <h4>Please enter your contact info</h4>
@@ -139,4 +138,11 @@ class ContactInfo extends Component {
   }
 }
 
-export default withRouter(ContactInfo);
+const mapStateToProps = state => {
+  return {
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice
+  }
+}
+
+export default connect(mapStateToProps)(withRouter(ContactInfo));
