@@ -8,7 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import myAxios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../components/withErrorHandler/withErrorHandler';
-import * as actionTypes from '../../components/store/actions';
+import * as burgerBuilderActions from '../../components/store/actions/index';
 import { connect } from 'react-redux';
 
 // const INGREDIENT_PRICES = {
@@ -146,8 +146,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onIngredientAdd: (ingNAme) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingNAme}),
-    onIngredientRemove: (ingNAme) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingNAme})
+    onIngredientAdd: (ingNAme) => dispatch(burgerBuilderActions.addIngredient(ingNAme)),
+    onIngredientRemove: (ingNAme) => dispatch(burgerBuilderActions.removeIngredient(ingNAme))
   }
 }
 

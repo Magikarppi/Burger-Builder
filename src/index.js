@@ -6,9 +6,9 @@ import { createStore } from 'redux'
 
 import './index.css';
 import App from './App';
-import reducer from './components/store/reducer';
+import burgerBuilderReducer from './components/store/reducers/burgerBuilder';
 
-const store = createStore(reducer)
+const store = createStore(burgerBuilderReducer)
 
 ReactDOM.render(
   <React.StrictMode>
