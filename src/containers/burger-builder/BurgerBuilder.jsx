@@ -21,14 +21,13 @@ class BurgerBuilder extends Component {
   _isMounted = false;
 
   state = {
-    ingredients: null,
     purchasing: false,
-    loading: false,
     doCheckout: false,
   };
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.onInitIngredients();
     // commented out for redux
     // myAxios
     //   .get('https://burgerbuilder-samih.firebaseio.com/ingredients.json')
@@ -108,17 +107,14 @@ class BurgerBuilder extends Component {
           show={this.state.purchasing}
           purchaseCancel={this.purchaseCancelHandler}
         >
-          {this.state.loading ? (
-            <Spinner />
-          ) : (
             <OrderSummary
               ingredients={this.props.ingredients}
               purchaseCancel={this.purchaseCancelHandler}
               purchaseContinue={this.purchaseContinueHandler}
               totalPrice={this.props.totalPrice.toFixed(2)}
             />
-          )}
         </Modal>
+        {this.props.error ? <p>Fetching ingredients failed</p> : null}
         {this.props.ingredients ? (
           <>
             <Burger ingredients={this.props.ingredients} />
@@ -140,14 +136,16 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
   return {
     ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    totalPrice: state.totalPrice,
+    error: state.error
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     onIngredientAdd: (ingNAme) => dispatch(burgerBuilderActions.addIngredient(ingNAme)),
-    onIngredientRemove: (ingNAme) => dispatch(burgerBuilderActions.removeIngredient(ingNAme))
+    onIngredientRemove: (ingNAme) => dispatch(burgerBuilderActions.removeIngredient(ingNAme)),
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
   }
 }
 

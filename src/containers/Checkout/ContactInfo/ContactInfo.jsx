@@ -6,6 +6,8 @@ import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
 import classes from './ContactInfo.module.css';
 import myAxios from '../../../axios-orders';
+import withErrorHandler from '../../../components/withErrorHandler/withErrorHandler';
+import * as actions from '../../../components/store/actions/index';
 
 const formHelper = (elType, elConfType, elConfHolder) => {
   return {
@@ -62,8 +64,6 @@ class ContactInfo extends Component {
   orderHandler = (e) => {
     e.preventDefault();
 
-    this.setState({loading: true})
-
     const formData = {};
     for (let formElementIdentifier in this.state.orderForm) {
       formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value
@@ -74,15 +74,17 @@ class ContactInfo extends Component {
       orderData: formData
     };
 
-    myAxios
-      .post('/orders.json', order)
-      .then((resp) => {
-        this.setState({ loading: false });
-        this.props.history.push('/');
-      })
-      .catch((err) => {
-        this.setState({ loading: false });
-      });
+    this.props.onOrderBurger(order)
+
+    // myAxios
+    //   .post('/orders.json', order)
+    //   .then((resp) => {
+    //     this.setState({ loading: false });
+    //     this.props.history.push('/');
+    //   })
+    //   .catch((err) => {
+    //     this.setState({ loading: false });
+    //   });
   };
 
   inputChangeHandler = (event, inputId) => {
@@ -145,4 +147,10 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(ContactInfo));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onOrderBurger: (orderData) => dispatch(actions.purchaseBurgerStart(orderData))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(ContactInfo, myAxios)));
