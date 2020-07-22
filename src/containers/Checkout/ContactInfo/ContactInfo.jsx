@@ -3,10 +3,11 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import classes from './ContactInfo.module.css';
-import myAxios from '../../../axios-orders';
-import withErrorHandler from '../../../components/withErrorHandler/withErrorHandler';
+// import myAxios from '../../../axios-orders';
+// import withErrorHandler from '../../../components/withErrorHandler/withErrorHandler';
 import * as actions from '../../../components/store/actions/index';
 
 const formHelper = (elType, elConfType, elConfHolder) => {
@@ -27,7 +28,6 @@ const formHelper = (elType, elConfType, elConfHolder) => {
 
 class ContactInfo extends Component {
   state = {
-    loading: false,
     formIsValid: false,
     orderForm: {
       name: formHelper('input', 'text', 'your name'),
@@ -74,7 +74,7 @@ class ContactInfo extends Component {
       orderData: formData
     };
 
-    this.props.onOrderBurger(order)
+    this.props.onOrderBurger(order, this.props.token)
 
     // myAxios
     //   .post('/orders.json', order)
@@ -116,6 +116,10 @@ class ContactInfo extends Component {
       }
     );
 
+    if (this.props.loading) {
+      return <Spinner />
+    }
+
     return (
       <div className={classes.ContactInfo}>
         <h4>Please enter your contact info</h4>
@@ -142,15 +146,17 @@ class ContactInfo extends Component {
 
 const mapStateToProps = state => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading,
+    token: state.auth.token
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onOrderBurger: (orderData) => dispatch(actions.purchaseBurgerStart(orderData))
+    onOrderBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(ContactInfo, myAxios)));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContactInfo));
