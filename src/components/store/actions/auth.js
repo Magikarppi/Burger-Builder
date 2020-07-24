@@ -1,6 +1,8 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
+const FIREBASE_API_KEY = process.env.REACT_APP_FIREBASE_API_KEY;
+
 export const authStart = () => {
   return {
     type: actionTypes.AUTH_START,
@@ -50,11 +52,11 @@ export const auth = (email, password, isSignUp) => {
     };
     console.log('authData', authData);
     let url =
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAc8r2N_zdVI1um3NT0kWYUyz1JiqnJWiM';
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + FIREBASE_API_KEY;
 
     if (!isSignUp) {
       url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAc8r2N_zdVI1um3NT0kWYUyz1JiqnJWiM';
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + FIREBASE_API_KEY;
     }
     axios
       .post(url, authData)
@@ -84,17 +86,12 @@ export const checkAuthState = () => {
       dispatch(logout());
     } else {
       const expirationDate = new Date(localStorage.getItem('expirationDate'));
-      console.log('expDate', expirationDate)
-      console.log('newDAte', new Date())
       if (expirationDate > new Date()) {
-        console.log('bigg')
         const userId = localStorage.getItem('userId')
         const expTime = ((expirationDate.getTime() - new Date().getTime()) / 1000);
-        console.log('expTime', expTime)
         dispatch(authSuccess(token, userId));
         dispatch(checkAuthTimeout(expTime));
       } else {
-        console.log('else')
         dispatch(logout());
       }
     }
