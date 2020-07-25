@@ -48,9 +48,6 @@ class Auth extends Component {
   checkValidity = (value, rules) => {
     let isValid = null;
 
-    console.log('rules.minl', rules.minLength);
-    console.log('value', value.length);
-
     if (rules.required) {
       isValid = value.trim() !== '';
     }
@@ -94,9 +91,6 @@ class Auth extends Component {
     const password = this.state.authForm.password.value;
     const isSignUp = this.state.isSignUp;
 
-    console.log(' password', password);
-    console.log('issignup', isSignUp);
-
     this.props.onAuth(email, password, isSignUp);
   };
 
@@ -128,8 +122,6 @@ class Auth extends Component {
     ));
 
     let errorMessage = null;
-
-    console.log('this.props.error', this.props.error)
 
     if (this.props.error) {
       errorMessage = (

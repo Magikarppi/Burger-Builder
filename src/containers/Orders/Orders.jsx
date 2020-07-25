@@ -30,8 +30,6 @@ class Orders extends Component {
 
   
   render() {
-    console.log('this.props.orders', this.props.orders)
-    console.log('this.props.loading', this.props.loading)
     if (this.props.orders && !this.props.loading) {
       return (
         <div>

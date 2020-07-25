@@ -50,7 +50,6 @@ export const auth = (email, password, isSignUp) => {
       password,
       returnSecureToken: true,
     };
-    console.log('authData', authData);
     let url =
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + FIREBASE_API_KEY;
 
@@ -61,11 +60,9 @@ export const auth = (email, password, isSignUp) => {
     axios
       .post(url, authData)
       .then((resp) => {
-        console.log('resp.data', resp.data);
         const expirationDate = new Date(
           new Date().getTime() + resp.data.expiresIn * 1000
         );
-        console.log('expirationDate', expirationDate);
         localStorage.setItem('token', resp.data.idToken);
         localStorage.setItem('expirationDate', expirationDate);
         localStorage.setItem('userId', resp.data.localId);
@@ -73,7 +70,6 @@ export const auth = (email, password, isSignUp) => {
         dispatch(checkAuthTimeout(resp.data.expiresIn));
       })
       .catch((error) => {
-        console.log('error', error.response);
         dispatch(authFail(error.response.data.error));
       });
   };

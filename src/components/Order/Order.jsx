@@ -3,7 +3,6 @@ import React from 'react';
 import classes from './Order.module.css';
 
 const order = (props) => {
-  console.log('props', props);
 
   const ingStyle = {
     textTransform: 'capitalize',

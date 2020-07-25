@@ -5,18 +5,9 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
-// import myAxios from '../../axios-orders';
-// import Spinner from '../../components/UI/Spinner/Spinner';
-// import withErrorHandler from '../../components/withErrorHandler/withErrorHandler';
 import * as actions from '../../components/store/actions/index';
 import { connect } from 'react-redux';
 
-// const INGREDIENT_PRICES = {
-//   salad: 0.6,
-//   cheese: 0.7,
-//   meat: 1.5,
-//   bacon: 0.9,
-// };
 class BurgerBuilder extends Component {
   _isMounted = false;
 
@@ -28,20 +19,10 @@ class BurgerBuilder extends Component {
   componentDidMount() {
     this._isMounted = true;
     this.props.onInitIngredients();
-    // commented out for redux
-    // myAxios
-    //   .get('https://burgerbuilder-samih.firebaseio.com/ingredients.json')
-    //   .then((resp) => {
-    //     this.setState({ ingredients: resp.data });
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   }
 
   updatePurchasable(ingredients) {
     const purchasable = Object.values(ingredients).some((amount) => amount > 0);
-    // this.setState({ purchasable });
     return purchasable;
   }
 
@@ -58,40 +39,9 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    // this.setState({ loading: true });
     this.props.onPurchaseInit();
     this.setState({ doCheckout: true });
   };
-
-  // addIngHandler = (type) => {
-  //   const updatedCount = this.state.ingredients[type] + 1;
-  //   const updatedPrice = this.state.totalPrice + INGREDIENT_PRICES[type];
-
-  //   const updatedIngs = { ...this.state.ingredients };
-  //   updatedIngs[type] = updatedCount;
-
-  //   this.setState({
-  //     ingredients: updatedIngs,
-  //     totalPrice: updatedPrice,
-  //   });
-  //   this.updatePurchasable(updatedIngs);
-  // };
-
-  // removeIngHandler = (type) => {
-  //   const updatedCount = this.state.ingredients[type] - 1;
-  //   if (updatedCount > -1) {
-  //     const updatedPrice = this.state.totalPrice - INGREDIENT_PRICES[type];
-
-  //     const updatedIngs = { ...this.state.ingredients };
-  //     updatedIngs[type] = updatedCount;
-
-  //     this.setState({
-  //       ingredients: updatedIngs,
-  //       totalPrice: updatedPrice,
-  //     });
-  //     this.updatePurchasable(updatedIngs);
-  //   }
-  // };
 
   render() {
     let disabledInfo = null;
