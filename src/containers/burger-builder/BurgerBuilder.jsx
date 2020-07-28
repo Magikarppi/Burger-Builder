@@ -8,7 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import * as actions from '../../components/store/actions/index';
 import { connect } from 'react-redux';
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
   _isMounted = false;
 
   state = {
